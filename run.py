@@ -31,6 +31,7 @@ plt.show()
 # 4. Label the new data at every point in time
 # 5. Use these label data and feed it to your neural network
 #
+# sliding window with , atleast half of the length, start of signal, hamming window / alized frequency (fake frequency) this is before fft
 # About the dataset
 # ->Skip columns from A to F. 
 # ->Each row comprises a sampled time signal.
