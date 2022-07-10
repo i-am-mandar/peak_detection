@@ -1,6 +1,8 @@
 # peak_detection
 
 Generic Approach
+
+
 0. Get a sample window and sampling rate to use in FFT
 1. Convert time domain signal to frequency domain using Fast Fourier Transform (fft is library in python)
 2. Analyse the frequency and apply filter (As per Prof use band pass filter with min. frequency of 30kHz and max. frequency of 50kHz), again get back the signal to time domain using Reverse Fast Fourier Transform
