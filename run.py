@@ -19,19 +19,24 @@ row_len = len(df.index)
 #first row of df
 row_1 = df.head(1)
 
-n = col_len
-y = row_1
+y = row_1.iloc[: ,128 : 256]
+print(y)
+n = 128
+print(y)
 
-ffty = np.fft.fft(y)
-fftx = np.fft.fftfreq(n, d=1)[:n//2]
+ffty = np.fft.rfft(y)
+#fftx = np.fft.fftfreq(n, 1/5000)[:n//2]
+fftx = np.fft.rfftfreq(n, 1/5000)
 #default sample space (inverse of sampling rate) is 1
 
-print(ffty)
+print(ffty[0])
 print(fftx)
 
-#plt.grid()
-#plt.plot(fftx, 2.0/n * np.abs(ffty[0:n//2]))
-#plt.show()
+plt.grid()
+#abs_ffty = 2.0/n * np.abs(ffty[0:n//2])
+#plt.plot(fftx, abs_ffty[0])
+plt.plot(fftx, np.abs(ffty[0]))
+plt.show()
 
 
 
