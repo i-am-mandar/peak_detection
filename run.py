@@ -71,7 +71,13 @@ plt.show()
 
 # yf = fft(normalized_tone)
 # xf = fftfreq(N, 1 / SAMPLE_RATE)
+# The maximum frequency is half the sample rate
+# points_per_freq = len(xf) / (SAMPLE_RATE / 2)
 
+# # Our target frequency is 4000 Hz
+# target_idx = int(points_per_freq * 4000)
+
+# yf[target_idx - 1 : target_idx + 2] = 0
 # plt.plot(xf, np.abs(yf))
 # plt.show()
 # end
