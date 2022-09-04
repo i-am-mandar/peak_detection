@@ -19,8 +19,8 @@ row_len = len(df.index)
 
 #first row of df
 row_1 = df.head(1)
-#425 * 8 = 3400
-step = 425
+#200 * 17 = 3400
+step = 200
 for i in range(step, col_len+1,(step//2)):
     y = row_1.iloc[: ,(i-step) : i]
     n = y.size

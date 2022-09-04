@@ -30,5 +30,5 @@
 # you might need to take a look
 # -> https://github.com/avhn/peakdetect
 #
-#
+# also: https://www.samproell.io/posts/signal/peak-finding-python-js/
 #
