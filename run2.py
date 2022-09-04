@@ -15,10 +15,11 @@ for i in range(0, len(df.index)):
 
   analytical_signal = hilbert(signal)
   env = np.abs(analytical_signal)
-  pd.Series(np.abs(analytical_signal)).plot()
+  pd.Series(env).plot()
 
   x, _ = find_peaks(env, height=0.02, width=20)
 
+  print(x)
   plt.plot(x, env[x], "x")
   plt.show()
 print("done")

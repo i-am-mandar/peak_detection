@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.fft import fft, fftfreq
 
 dataset = "dataset\T_File_5.xlsx"
 df = pd.read_excel(dataset)
@@ -10,33 +11,28 @@ df = df.iloc[0: ,6:]
 
 #length of column
 col_len = len(df.columns)
-#print(col_len)
+print(col_len)
 
-#length of column
+#length of row
 row_len = len(df.index)
 #print(row_len)
 
 #first row of df
 row_1 = df.head(1)
-
-y = row_1.iloc[: ,128 : 256]
-print(y)
-n = 128
-print(y)
-
-ffty = np.fft.rfft(y)
-#fftx = np.fft.fftfreq(n, 1/5000)[:n//2]
-fftx = np.fft.rfftfreq(n, 1/5000)
-#default sample space (inverse of sampling rate) is 1
-
-print(ffty[0])
-print(fftx)
-
-plt.grid()
-#abs_ffty = 2.0/n * np.abs(ffty[0:n//2])
-#plt.plot(fftx, abs_ffty[0])
-plt.plot(fftx, np.abs(ffty[0]))
-plt.show()
+#200 * 17 = 3400
+step = 200
+for i in range(step, col_len+1,(step//2)):
+    y = row_1.iloc[: ,(i-step) : i]
+    n = y.size
+    timestep = 0.01
+    ffty = np.fft.rfft(y)
+    fftx = np.fft.rfftfreq(n, d=timestep)
+    #print(len(ffty[0]))
+    #print(len(fftx))
+    plt.grid()
+    plt.plot(fftx, np.abs(ffty[0]))
+    plt.show()
+print("done")
 
 
 
