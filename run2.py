@@ -1,5 +1,3 @@
-#new appraoch 
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import hilbert
@@ -24,3 +22,10 @@ for i in range(0, len(df.index)):
   plt.plot(x, env[x], "x")
   plt.show()
 print("done")
+
+
+# other approach
+# 1. rollowing average filter
+# 2. fill 0 if nan
+# 3. apply hilbert transform to get upper envelope and take abs avlue
+# 4. find peaks
