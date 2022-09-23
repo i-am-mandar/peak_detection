@@ -1,0 +1,9 @@
+Instruction for running the Application:
+
+Visual studio code
+
+- pip3 install flask
+- pip3 install flask_wtf wtforms
+
+Create a excel sheet with two column name : input and result, see example excel file into Flask-File-Uploads\static\files folder
+
