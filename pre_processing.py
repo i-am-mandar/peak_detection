@@ -10,6 +10,7 @@ from sklearn.cluster import SpectralClustering
 
 #-1. read from xlsx into dataframe
 dataset = "dataset\T_File_5.xlsx"
+#dataset = "dataset\Wand_000.xlsx"
 df = pd.read_excel(dataset)
 
 df = df.iloc[0: ,6:]
@@ -128,3 +129,4 @@ print("done")
 # 9. save all the position of the peaks in list
 #10. cluster and label the peaks
 #11. apply 1D CNN with backpropogation
+
