@@ -29,10 +29,12 @@ df = pd.read_excel(dataset)
 peak = np.zeros((len(df.index),), dtype=int)
 label = np.zeros((len(df.index),), dtype=int)
 df = df.iloc[0: ,17:]
-#print(df)
+
 #print(df.shape)
 #[532 rows x 16368 columns]
 #window(124)*class(264) = 16368 and overlap(62)
+
+#looping thru all df
 for i in range(0, len(df.index)):
   f= df.iloc[i,0:]
   
@@ -52,12 +54,9 @@ for i in range(0, len(df.index)):
   
   analytical_signal = hilbert(ffilt.real)
   env = np.abs(analytical_signal)
-  
-  #x, _ = find_peaks(env, height=2000, width=20)
   x, _ = find_peaks(env, distance=n)
   
-  #fig, axs = plt.subplots(3,1)
-  #  
+  #fig, axs = plt.subplots(3,1)  
   ##4. plot orignal noisy signal
   #plt.sca(axs[0])
   #plt.plot(time,f, label='Noisy')
@@ -89,7 +88,6 @@ for i in range(0, len(df.index)):
 
   peak[i] = x
   
-#print(peak)
 n_slice = 62
 
 for i in range(0,len(peak)):
@@ -105,43 +103,33 @@ for i in range(0,len(label)):
 
 
 xtrain, xtest, ytrain, ytest=train_test_split(df, y_label, test_size=0.25)
-
-#print(xtrain.shape)
-#print(xtest.shape)
-#print(ytrain.shape)
-print(ytest.shape)
-
 verbose, epochs, batch_size = 1, 10, 32
 model = Sequential()
 
-#model.add(Conv1D(filters=64, kernel_size=3, activation="relu", input_shape=(len(df.columns),1)))
-#model.add(Conv1D(filters=64, kernel_size=3, activation='relu'))
-#model.add(Dropout(0.5))
-#model.add(MaxPooling1D(pool_size=5))
-#model.add(Flatten())
-#model.add(Dense(1052, activation='relu'))
-#model.add(Dense(263, activation='softmax'))
-
-model.add(Conv1D(64, 3, activation="relu", input_shape=(len(df.columns),1)))
-model.add(Dense(16, activation="relu"))
-model.add(MaxPooling1D())
+#model the CNN approach 1
+model.add(Conv1D(filters=64, kernel_size=3, activation="relu", input_shape=(len(df.columns),1)))
+model.add(Conv1D(filters=64, kernel_size=3, activation='relu'))
+model.add(Dropout(0.5))
+model.add(MaxPooling1D(pool_size=5))
 model.add(Flatten())
-model.add(Dense(263, activation = 'softmax'))
+model.add(Dense(1052, activation='relu'))
+model.add(Dense(263, activation='softmax'))
 
+#model the CNN approach 2
+#model.add(Conv1D(64, 3, activation="relu", input_shape=(len(df.columns),1)))
+#model.add(Dense(16, activation="relu"))
+#model.add(MaxPooling1D())
+#model.add(Flatten())
+#model.add(Dense(263, activation = 'softmax'))
+
+#compile the model and fit it
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
-# fit network
 model.fit(xtrain, ytrain, epochs=epochs, batch_size=batch_size, verbose=verbose)
+
+#evaluate model and get accuracy
 _, accuracy = model.evaluate(xtest, ytest, batch_size=batch_size, verbose=verbose)
 accuracy = accuracy * 100.0
 
-#model.save("trained_model")
-sample = df.iloc[1,0:]
-sample_x = sample.values.reshape(1,-1)
-
-print(type(sample_x))
-print(sample_x.shape)
-predict_y=model.predict(sample_x)
-classes_y=np.argmax(predict_y,axis=1)
-
-print(classes_y)
+#save the model
+#model.save("trained_model") #uncomment to save the model

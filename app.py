@@ -12,6 +12,9 @@ from matplotlib.figure import Figure
 from pathlib import Path
 import io
 import base64
+import numpy as np
+from model_predict import predict
+from scipy.signal import hilbert
 
 
 app = Flask(__name__)
@@ -33,23 +36,30 @@ def home():
     
     if request.method == 'POST':
         if form.validate_on_submit():
-            file = form.file.data # First grab the file
+            file = form.file.data # grab the file
             file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
-            data = pd.read_excel(file)
+            
+            df = pd.read_excel(file) # read the data
         
-            for i, row in data.iterrows(): # read each row from excel
-                #for j, column in row.iteritems():
-                    #print(row.input, row.result)
-                    input.append(row.input) 
-                    amp.append(row.result) 
-        
+            df = df.iloc[0: ,17:]    # ignore the unecessary data
+            f = df.iloc[0,0:] 
+            n = f.size
+            time=np.arange(n)
+            x = predict(f)     #get this from cnn or z-score
+            
+            analytical_signal = hilbert(f)
+            env = np.abs(analytical_signal)
+            
             fig = Figure()
             axis = fig.add_subplot(1, 1, 1)
-            axis.set_title("title")
-            axis.set_xlabel("x-axis")
-            axis.set_ylabel("y-axis")
+            axis.set_title("Detecting Peak")
+            axis.set_xlabel("Time")
+            axis.set_ylabel("Amplitude")
+            axis.set_xlim(time[0], time[-1])
             axis.grid()
-            axis.plot(input, amp, "ro-")
+            axis.plot(time, f)
+            #axis.plot(time, env)
+            axis.plot(x, env[x], "x")
             
             pngImage = io.BytesIO()
             FigureCanvas(fig).print_png(pngImage)
@@ -59,7 +69,7 @@ def home():
             pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
 
         
-            return render_template('plot.html', name = 'Peak', image=pngImageB64String)
+            return render_template('plot.html', name = x, image=pngImageB64String)
     else:
         return render_template('index.html', form=form)
 

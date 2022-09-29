@@ -9,11 +9,11 @@ from scipy.signal.windows import hamming
 from sklearn.cluster import SpectralClustering
 
 #-1. read from xlsx into dataframe
-dataset = "dataset\T_File_5.xlsx"
-#dataset = "dataset\Wand_000.xlsx"
+#dataset = "dataset\T_File_5.xlsx"
+dataset = "dataset\T_Wand_000.xlsx"
 df = pd.read_excel(dataset)
 
-df = df.iloc[0: ,6:]
+df = df.iloc[0: ,17:]
 #print(df)
 
 first_peak = []
@@ -47,7 +47,10 @@ for i in range(0, len(df.index)):
   #3. using hilbert transformation to calculate upper envelope
   analytical_signal = hilbert(ffilt.real)
   env = np.abs(analytical_signal)
-  x, _ = find_peaks(env, height=0.02, width=20)
+  x, _ = find_peaks(env, distance=n)
+  
+  print(i,env)
+  print(i,x)
   
   #fig, axs = plt.subplots(3,1)
   
