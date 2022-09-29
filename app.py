@@ -1,0 +1,68 @@
+#flask app
+
+from flask import Flask, render_template, request
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField
+from werkzeug.utils import secure_filename
+import os
+from wtforms.validators import InputRequired
+import pandas as pd
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+from pathlib import Path
+import io
+import base64
+
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'supersecretkey'
+app.config['UPLOAD_FOLDER'] = 'static/files'
+app.config['SAVE_PLOT'] = 'static/plot'
+
+class UploadFileForm(FlaskForm):
+    file = FileField("File", validators=[InputRequired()])
+    submit = SubmitField("Upload File")
+
+@app.route('/', methods=['GET',"POST"])
+@app.route('/home', methods=['GET',"POST"])
+def home():
+
+    form = UploadFileForm()
+    input = []
+    amp = []
+    
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            file = form.file.data # First grab the file
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
+            data = pd.read_excel(file)
+        
+            for i, row in data.iterrows(): # read each row from excel
+                #for j, column in row.iteritems():
+                    #print(row.input, row.result)
+                    input.append(row.input) 
+                    amp.append(row.result) 
+        
+            fig = Figure()
+            axis = fig.add_subplot(1, 1, 1)
+            axis.set_title("title")
+            axis.set_xlabel("x-axis")
+            axis.set_ylabel("y-axis")
+            axis.grid()
+            axis.plot(input, amp, "ro-")
+            
+            pngImage = io.BytesIO()
+            FigureCanvas(fig).print_png(pngImage)
+    
+            # Encode PNG image to base64 string
+            pngImageB64String = "data:image/png;base64,"
+            pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+
+        
+            return render_template('plot.html', name = 'Peak', image=pngImageB64String)
+    else:
+        return render_template('index.html', form=form)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
