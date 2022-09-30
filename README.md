@@ -1,6 +1,6 @@
 # peak_detection
 
-Goal is to deteck peak in given signal(s) in directory `\dataset` with computation intelligence and not just signal processing.
+Goal is to detect peak in given signal(s) in directory `\dataset` with computation intelligence and not just signal processing.
 
 ## approach A
 
@@ -53,13 +53,13 @@ Goal is to deteck peak in given signal(s) in directory `\dataset` with computati
 
 ## results
 
-0. input - `\static\files\sample_input.xlsx`
+0. input - `\static\files\sample_input_001.xlsx`
 
 ![image](https://github.com/i-am-mandar/peak_detection/blob/mandar/results/result_sample_input_001.png)
 
 
-1. input - `\static\files\sample_input.xlsx`
+1. input - `\static\files\sample_input_002.xlsx`
 
 ![image](https://github.com/i-am-mandar/peak_detection/blob/mandar/results/result_sample_input_002.png)
 
-Note: You can always run reach `CNN_Model.py`, `model_train.py` and `model_predict.py` for individual output 
+Note: You can always run each file `CNN_Model.py`, `model_train.py` and `model_predict.py` for individual output 
