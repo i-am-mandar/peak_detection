@@ -15,6 +15,7 @@ import base64
 import numpy as np
 from model_predict import predict
 from scipy.signal import hilbert
+from scipy.signal import find_peaks
 
 
 app = Flask(__name__)
@@ -31,8 +32,6 @@ class UploadFileForm(FlaskForm):
 def home():
 
     form = UploadFileForm()
-    input = []
-    amp = []
     
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -45,34 +44,41 @@ def home():
             f = df.iloc[0,0:] 
             n = f.size
             time=np.arange(n)
-            x = predict(f)     #get this from cnn or z-score
+            predict_peak = predict(f)     #get this from cnn 
             
             analytical_signal = hilbert(f)
             env = np.abs(analytical_signal)
+            x, _ = find_peaks(env, distance=n)
             
-            fig = Figure()
-            axis = fig.add_subplot(1, 1, 1)
-            axis.set_title("Detecting Peak")
-            axis.set_xlabel("Time")
-            axis.set_ylabel("Amplitude")
-            axis.set_xlim(time[0], time[-1])
-            axis.grid()
-            axis.plot(time, f)
-            #axis.plot(time, env)
-            axis.plot(x, env[x], "x")
-            
-            pngImage = io.BytesIO()
-            FigureCanvas(fig).print_png(pngImage)
-    
-            # Encode PNG image to base64 string
-            pngImageB64String = "data:image/png;base64,"
-            pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+            predict_peak_image = render_image(time, f, predict_peak, env)
+            find_peak_image = render_image(time, f, x, env)
 
         
-            return render_template('plot.html', name = x, image=pngImageB64String)
+            return render_template('plot.html', predict_peak = predict_peak, predict_peak_image = predict_peak_image, find_peak = x, find_peak_image = find_peak_image)
     else:
         return render_template('index.html', form=form)
 
+
+def render_image(time, signal, peak, envelope):
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    axis.set_title("Detecting Peak")
+    axis.set_xlabel("Time")
+    axis.set_ylabel("Amplitude")
+    axis.set_xlim(time[0], time[-1])
+    axis.grid()
+    axis.plot(time, signal)
+    #axis.plot(time, env)
+    axis.plot(peak, envelope[peak], "x")
+    
+    pngImage = io.BytesIO()
+    FigureCanvas(fig).print_png(pngImage)
+    
+    # Encode PNG image to base64 string
+    pngImageB64String = "data:image/png;base64,"
+    pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+    
+    return pngImageB64String
 
 if __name__ == '__main__':
     app.run(debug=True)
