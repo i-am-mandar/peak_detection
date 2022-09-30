@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Peak Detection</title>
+    <style>
+        .images { width:100%;}
+        .graph {float:left; padding:10px;}
+        h1   {color: black; text-align:center;}
+        h3   {color: blue; text-align:center;}
+        p    {color: red; text-align:center;}
+    </style>
+</head>
+<body>
+<a href="{{ url_for('home') }}">Try again</a>
+    <h1>Results Peak Detection</h1>
+    <p>x - peak marked</p>
+    <div class="images">
+        <div class="graph">
+            <h3>Using 1D CNN</h3>
+            <p>Peak: {{predict_peak}}</p>
+            <img src="{{ predict_peak_image }}" >        
+        </div>
+        <div class="graph">
+            <h3>Using scipy.signal.find_peak()</h3>
+            <p>Peak: {{find_peak}}</p>
+            <img src="{{ find_peak_image }}" >        
+        </div>
+     </div>
+     
+	
+    
+</body>
+</html>
